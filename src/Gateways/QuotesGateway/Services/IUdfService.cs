@@ -9,5 +9,8 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
     public interface IUdfService
     {
         Task<HistoryQuoteInfo> GetHistoryQuotes(string symbol, long from, long to, string resolution = "D");
+        Task<SymboInfo> GetSymbol(string symbol);
+        Task<MarkInfo> GetMarks(string symbol, long from, long to, string resolution = "D");
+        Task<ConfigInfo> GetConfig();
     }
 }

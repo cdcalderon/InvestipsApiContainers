@@ -15,7 +15,7 @@ namespace QuotesGateway.Controllers
         private ISignalService _signalService;
         public StochBull301SignalsController(ISignalService signalService) =>
             _signalService = signalService;
-
+       
 
         // GET: api/Signals/5
         [HttpGet]

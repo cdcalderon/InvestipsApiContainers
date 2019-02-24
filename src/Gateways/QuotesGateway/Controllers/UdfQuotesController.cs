@@ -18,11 +18,38 @@ namespace QuotesGateway.Controllers
 
         [HttpGet]
         [Route("history")]
-        public async Task<IActionResult> Get([FromQuery]string symbol,  [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
+        public async Task<IActionResult> GetHistory([FromQuery]string symbol,  [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
         {
             var signals = await _udfService.GetHistoryQuotes(symbol, from, to, resolution);
 
             return Ok(signals);
+        }
+
+        [HttpGet]
+        [Route("symbols")]
+        public async Task<IActionResult> GetSymbol([FromQuery]string symbol)
+        {
+            var symbolInfo = await _udfService.GetSymbol(symbol);
+
+            return Ok(symbolInfo);
+        }
+
+        [HttpGet]
+        [Route("marks")]
+        public async Task<IActionResult> Marks([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
+        {
+            var configInfo = await _udfService.GetMarks(symbol, from, to, resolution);
+
+            return Ok(configInfo);
+        }
+
+        [HttpGet]
+        [Route("config")]
+        public async Task<IActionResult> Config()
+        {
+            var configInfo = await _udfService.GetConfig();
+
+            return Ok(configInfo);
         }
     }
 }

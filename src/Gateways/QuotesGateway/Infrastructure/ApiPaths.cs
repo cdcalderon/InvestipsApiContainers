@@ -40,12 +40,30 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Infrastructure
             }
         }
 
-        public static class HistoryQuote
+        public static class UdfQuotes
         {
             public static string GetHistoryQuotes(string baseUri, string symbol, long from, long to, string resolution)
             {
                 
                 return $"{baseUri}history?symbol={symbol}&resolution={resolution}&from={from}&to={to}";
+            }
+
+            public static string GetSymbol(string baseUri, string symbol)
+            {
+
+                return $"{baseUri}symbols?symbol={symbol}";
+            }
+
+            public static string GetMarks(string baseUri, string symbol, long from, long to, string resolution)
+            {
+
+                return $"{baseUri}marks?symbol={symbol}&resolution={resolution}&from={from}&to={to}";
+            }
+
+            public static string GetConfig(string baseUri)
+            {
+
+                return $"{baseUri}config";
             }
         }
 
