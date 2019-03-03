@@ -26,7 +26,7 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
             _logger = logger;
 
             _remoteServiceBaseUrl = $"{_settings.Value.UdfQuotesUrl}/api/udf/";
-            _remoteServiceBaseUrlMarks = $"{_settings.Value.SignalsUrl}/api/GapSignalsFunction/";
+            _remoteServiceBaseUrlMarks = $"{_settings.Value.SignalsUrl}/api/BullThreeArrowSignalsFunction/";
         }
         public async Task<HistoryQuoteInfo> GetHistoryQuotes(string symbol, long from, long to, string resolution = "D")
         {

@@ -7,6 +7,7 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Models
 {
     public class MarkInfo
     {
+        public List<int> id { get; set; }
         public List<long> time { get; set; }
         public List<string> color { get; set; }
         public List<string> text { get; set; }

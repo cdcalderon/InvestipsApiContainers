@@ -57,7 +57,8 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Infrastructure
             public static string GetMarks(string baseUri, string symbol, long from, long to, string resolution)
             {
 
-                return $"{baseUri}marks?symbol={symbol}&resolution={resolution}&from={from}&to={to}";
+              return $"{baseUri}?symbol={symbol}&resolution={resolution}&from={from}&to={to}";
+               // return $"{baseUri}";
             }
 
             public static string GetConfig(string baseUri)

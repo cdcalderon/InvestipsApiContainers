@@ -36,7 +36,8 @@ namespace QuotesGateway.Controllers
 
         [HttpGet]
         [Route("marks")]
-        public async Task<IActionResult> Marks([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
+        public async Task<IActionResult> Marks(
+            [FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
         {
             var configInfo = await _udfService.GetMarks(symbol, from, to, resolution);
 
