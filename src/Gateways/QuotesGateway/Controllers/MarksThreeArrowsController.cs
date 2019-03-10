@@ -18,9 +18,18 @@ namespace QuotesGateway.Controllers
 
         [HttpGet]
         [Route("marksgreenarrows")]
-        public async Task<IActionResult> Marks([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
+        public async Task<IActionResult> MarksBullGreenThreeArrows([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
         {
-            var configInfo = await _udfService.GetMarks(symbol, from, to, resolution);
+            var configInfo = await _udfService.GetBullThreeGreenArrowMarks(symbol, from, to, resolution);
+
+            return Ok(configInfo);
+        }
+
+        [HttpGet]
+        [Route("marksgaps")]
+        public async Task<IActionResult> MarksGaps([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
+        {
+            var configInfo = await _udfService.GetSuperGapMarks(symbol, from, to, resolution);
 
             return Ok(configInfo);
         }

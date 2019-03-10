@@ -10,7 +10,8 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
     {
         Task<HistoryQuoteInfo> GetHistoryQuotes(string symbol, long from, long to, string resolution = "D");
         Task<SymboInfo> GetSymbol(string symbol);
-        Task<MarkInfo> GetMarks(string symbol, long from, long to, string resolution = "D");
+        Task<MarkInfo> GetBullThreeGreenArrowMarks(string symbol, long from, long to, string resolution = "D");
+        Task<MarkInfo> GetSuperGapMarks(string symbol, long from, long to, string resolution = "D");
         Task<ConfigInfo> GetConfig();
     }
 }
