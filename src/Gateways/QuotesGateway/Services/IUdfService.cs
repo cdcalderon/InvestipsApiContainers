@@ -12,6 +12,7 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
         Task<SymboInfo> GetSymbol(string symbol);
         Task<MarkInfo> GetBullThreeGreenArrowMarks(string symbol, long from, long to, string resolution = "D");
         Task<MarkInfo> GetSuperGapMarks(string symbol, long from, long to, string resolution = "D");
+        Task<MarkInfo> GetBullStoch307Marks(string symbol, long from, long to, string resolution = "D");
         Task<ConfigInfo> GetConfig();
     }
 }

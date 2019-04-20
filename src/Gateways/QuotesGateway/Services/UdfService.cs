@@ -19,6 +19,7 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
         private readonly string _remoteServiceBaseUrl;
         private readonly string _remoteServiceBaseUrlBullThreeArrowSignalsMarks;
         private readonly string _remoteServiceBaseUrlGapSignalsMarks;
+        private readonly string _remoteServiceBaseUrlBullStoch307SignalsMarks;
         //private readonly  Dictionary<string, string> _signalsBaseUrls;
 
         public UdfService(IOptionsSnapshot<AppSettings> settings, IHttpClient httpClient, ILogger<UdfService> logger)
@@ -37,6 +38,7 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
 
             _remoteServiceBaseUrlBullThreeArrowSignalsMarks = $"{_settings.Value.SignalsUrl}/api/BullThreeArrowSignalsFunction/";
             _remoteServiceBaseUrlGapSignalsMarks = $"{_settings.Value.SignalsUrl}/api/GapSignalsFunction/";
+            _remoteServiceBaseUrlBullStoch307SignalsMarks = $"{_settings.Value.SignalsUrl}/api/StochBull307SignalsFunction/";
 
         }
         public async Task<HistoryQuoteInfo> GetHistoryQuotes(string symbol, long from, long to, string resolution = "D")
@@ -75,6 +77,17 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
         public async Task<MarkInfo> GetSuperGapMarks(string symbol, long from, long to, string resolution = "D")
         {
             var marksUri = ApiPaths.UdfQuotes.GetMarks(_remoteServiceBaseUrlGapSignalsMarks, symbol, from, to, resolution);
+
+            var dataString = await _apiClient.GetStringAsync(marksUri);
+
+            var response = JsonConvert.DeserializeObject<MarkInfo>(dataString);
+
+            return response;
+        }
+
+        public async Task<MarkInfo> GetBullStoch307Marks(string symbol, long from, long to, string resolution = "D")
+        {
+            var marksUri = ApiPaths.UdfQuotes.GetMarks(_remoteServiceBaseUrlBullStoch307SignalsMarks, symbol, from, to, resolution);
 
             var dataString = await _apiClient.GetStringAsync(marksUri);
 

@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using InvestipsApiContainers.Gateways.QuotesGateway.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace QuotesGateway.Controllers
+namespace InvestipsApiContainers.Gateways.QuotesGateway.Controllers
 {
     [Route("api/udf")]
     [ApiController]
-    public class MarksThreeArrowsController : ControllerBase
+    public class MarksController : ControllerBase
     {
         private IUdfService _udfService;
-        public MarksThreeArrowsController(IUdfService udfService) =>
+        public MarksController(IUdfService udfService) =>
             _udfService = udfService;
 
         [HttpGet]
@@ -30,6 +26,15 @@ namespace QuotesGateway.Controllers
         public async Task<IActionResult> MarksGaps([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
         {
             var configInfo = await _udfService.GetSuperGapMarks(symbol, from, to, resolution);
+
+            return Ok(configInfo);
+        }
+
+        [HttpGet]
+        [Route("stoch307bull")]
+        public async Task<IActionResult> MarksBullh307([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
+        {
+            var configInfo = await _udfService.GetBullStoch307Marks(symbol, from, to, resolution);
 
             return Ok(configInfo);
         }
