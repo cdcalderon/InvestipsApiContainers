@@ -38,5 +38,32 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Controllers
 
             return Ok(configInfo);
         }
+
+        [HttpGet]
+        [Route("bullbigeight")]
+        public async Task<IActionResult> MarksBullEight([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
+        {
+            var configInfo = await _udfService.GetBullEightMarks(symbol, from, to, resolution);
+
+            return Ok(configInfo);
+        }
+
+        [HttpGet]
+        [Route("allbullmarks")]
+        public async Task<IActionResult> MarksBullAll([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
+        {
+            var configInfo = await _udfService.GetAllBullMarks(symbol, from, to, resolution);
+
+            return Ok(configInfo);
+        }
+
+        [HttpGet]
+        [Route("allbearmarks")]
+        public async Task<IActionResult> MarksAllBear([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
+        {
+            var configInfo = await _udfService.GetAllBearMarks(symbol, from, to, resolution);
+
+            return Ok(configInfo);
+        }
     }
 }

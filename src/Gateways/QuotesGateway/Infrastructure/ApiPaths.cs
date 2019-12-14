@@ -61,6 +61,12 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Infrastructure
                // return $"{baseUri}";
             }
 
+            public static string GetAllSignals(string baseUri)
+            {
+
+                return $"{baseUri}";
+            }
+
             public static string GetConfig(string baseUri)
             {
 
