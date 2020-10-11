@@ -38,8 +38,23 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Infrastructure
             {
                 return $"{baseUri}/bull/stock307/{symbol}";
             }
-        }
 
+            public static string GetFiboSignals(string baseUri, string symbol)
+            {
+                return $"{baseUri}?symbol={symbol}";
+            }
+
+            public static string GetWeeklyFutureFiboSignalsByDateRange(string baseUri, long from, long to)
+            {
+                return $"{baseUri}?from={from}&to={to}";
+            }
+
+            public static string GetABBLowHighFibSignalByDateRange(string baseUri, long from, long to)
+            {
+                return $"{baseUri}?from={from}&to={to}";
+            }
+        }
+      
         public static class UdfQuotes
         {
             public static string GetHistoryQuotes(string baseUri, string symbol, long from, long to, string resolution)

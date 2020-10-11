@@ -49,6 +49,7 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway
             services.AddSingleton<IHttpClient, CustomHttpClient>();
             services.AddTransient<IUdfService, UdfService>();
             services.AddTransient<ISignalService, SignalService>();
+            services.AddTransient<IFiboSignalService, FiboSignalService>();
 
             services.AddCors(options =>
             {

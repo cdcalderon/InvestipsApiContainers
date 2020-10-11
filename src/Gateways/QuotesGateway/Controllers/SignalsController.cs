@@ -13,14 +13,46 @@ namespace QuotesGateway.Controllers
     public class SignalsController : ControllerBase
     {
         private IUdfService _udfService;
-        public SignalsController(IUdfService udfService) =>
+        private IFiboSignalService _fiboSignalService;
+
+        public SignalsController(IUdfService udfService, IFiboSignalService fiboSignalService) {
             _udfService = udfService;
+            _fiboSignalService = fiboSignalService;
+        }
+           
 
         [HttpGet]
         [Route("allsignals")]
         public async Task<IActionResult> GetAllSignals([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
         {
             var configInfo = await _udfService.GetAllSignals();
+
+            return Ok(configInfo);
+        }
+
+        [HttpGet]
+        [Route("fibosignals")]
+        public async Task<IActionResult> GetFiboSignals([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
+        {
+            var configInfo = await _fiboSignalService.GetFiboSignals(symbol);
+
+            return Ok(configInfo);
+        }
+
+        [HttpGet]
+        [Route("weeklyfibosignalsbydaterange")]
+        public async Task<IActionResult> GetWeeklyFutureFiboSignalsByDateRange([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
+        {
+            var configInfo = await _fiboSignalService.GetWeeklyFutureFiboSignalsByDateRange(from, to);
+
+            return Ok(configInfo);
+        }
+
+        [HttpGet]
+        [Route("getabblowhighfibobydaterange")]
+        public async Task<IActionResult> GetABBLowHighFibSignalByDateRange([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
+        {
+            var configInfo = await _fiboSignalService.GetABBLowHighFibSignalByDateRange(from, to);
 
             return Ok(configInfo);
         }
