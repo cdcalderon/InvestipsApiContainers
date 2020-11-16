@@ -56,5 +56,14 @@ namespace QuotesGateway.Controllers
 
             return Ok(configInfo);
         }
+
+        [HttpGet]
+        [Route("zigzagfibosignalsbydaterange")]
+        public async Task<IActionResult> GetZigZagFiboSignalsByDateRange([FromQuery] string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery] string resolution = "D")
+        {
+            var configInfo = await _fiboSignalService.GetZigZagFiboSignalsByDateRange(from, to);
+
+            return Ok(configInfo);
+        }
     }
 }

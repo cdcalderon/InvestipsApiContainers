@@ -53,8 +53,13 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Infrastructure
             {
                 return $"{baseUri}?from={from}&to={to}";
             }
+
+            public static string GetZigZagFiboSignalsByDateRange(string baseUri, long from, long to)
+            {
+                return $"{baseUri}?from={from}&to={to}";
+            }
         }
-      
+
         public static class UdfQuotes
         {
             public static string GetHistoryQuotes(string baseUri, string symbol, long from, long to, string resolution)

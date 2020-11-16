@@ -22,6 +22,7 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
         private readonly string _getFiboSignalsUrl;
         private readonly string _getWeeklyFutureFiboSignalByDateRangeUrl;
         private readonly string _getABBLowHighFibSignalByDateRangeUrl;
+        private readonly string _getZigZagFiboSignalByDateRangeUrl;
         public FiboSignalService(IOptionsSnapshot<AppSettings> settings, IHttpClient httpClient, ILogger<SignalService> logger)
         {
             _settings = settings;
@@ -32,6 +33,7 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
             _getFiboSignalsUrl = $"{_settings.Value.SignalsUrl}/api/weeklyfuturefibosignal/";
             _getWeeklyFutureFiboSignalByDateRangeUrl = $"{_settings.Value.SignalsUrl}/api/getweeklyfuturefibosignalbydaterange/";
             _getABBLowHighFibSignalByDateRangeUrl = $"{_settings.Value.SignalsUrl}/api/getabblowhighfibobydaterange/";
+            _getZigZagFiboSignalByDateRangeUrl = $"{_settings.Value.SignalsUrl}/api/GetZigZagSignalsByDateRange/";
         }
 
         public async Task<IEnumerable<WeeklyFutureFiboSignal>> GetFiboSignals(string symbol)
@@ -63,6 +65,17 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
             var dataString = await _apiClient.GetStringAsync(aBBLowHighFibSignalByDateRangeUri);
 
             var response = JsonConvert.DeserializeObject<IEnumerable<WeeklyFutureFiboSignal>>(dataString);
+
+            return response;
+        }
+
+        public async Task<IEnumerable<ZigZagFiboSignal>> GetZigZagFiboSignalsByDateRange(long from, long to)
+        {
+            var zigzagFiboSignalsByDateRangeUri = ApiPaths.Signals.GetZigZagFiboSignalsByDateRange(_getZigZagFiboSignalByDateRangeUrl, from, to);
+
+            var dataString = await _apiClient.GetStringAsync(zigzagFiboSignalsByDateRangeUri);
+
+            var response = JsonConvert.DeserializeObject<IEnumerable<ZigZagFiboSignal>>(dataString);
 
             return response;
         }

@@ -29,9 +29,18 @@ namespace QuotesGateway.Controllers
         [Route("symbols")]
         public async Task<IActionResult> GetSymbol([FromQuery]string symbol)
         {
-            var symbolInfo = await _udfService.GetSymbol(symbol);
+            try
+            {
+                var symbolInfo = await _udfService.GetSymbol(symbol);
 
-            return Ok(symbolInfo);
+                return Ok(symbolInfo);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+            
         }
 
         //[HttpGet]
