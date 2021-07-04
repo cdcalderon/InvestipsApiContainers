@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using InvestipsApiContainers.Gateways.QuotesGateway.DTOs;
 using InvestipsApiContainers.Gateways.QuotesGateway.Models;
+using YahooFinanceApi;
 
 namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
 {
@@ -16,9 +18,8 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
         Task<MarkInfo> GetBullEightMarks(string symbol, long from, long to, string resolution = "D");
         Task<MarkInfo> GetAllBullMarks(string symbol, long from, long to, string resolution = "D");
         Task<MarkInfo> GetAllBearMarks(string symbol, long from, long to, string resolution = "D");
-
         Task<MarkInfo> GetAllSignals();
-
         Task<ConfigInfo> GetConfig();
+        Task<IReadOnlyDictionary<string, SecurityQuote>> GetQuotes(string[] symbols);
     }
 }

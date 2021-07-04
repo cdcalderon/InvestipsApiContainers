@@ -20,5 +20,18 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.DTOs
         public decimal Close { get; set; }
         public DateTime TimeStampDateTime { get; set; }
         public DateTime DateOfFirstDayOfWeek { get; set; }
+        public decimal AFib { get; set; }
+        public decimal BFib { get; set; }
+        public decimal CFib { get; set; }
+        public DateTime ADate { get; set; }
+        public DateTime BDate { get; set; }
+        public DateTime CDate { get; set; }
+        public decimal CLowestOpenOrClose { get; set; }
+        public decimal CHighestOpenOrClose { get; set; }
+        public string ActivationDirection { get; set; }
+        public decimal ActivationPrice { get; set; }
+        public DateTime ActivationDate { get; set; }
+        public decimal Support { get; set; }
+        public decimal Resistence { get; set; }
     }
 }

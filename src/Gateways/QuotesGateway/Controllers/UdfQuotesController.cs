@@ -43,6 +43,15 @@ namespace QuotesGateway.Controllers
             
         }
 
+        [HttpGet]
+        [Route("quote")]
+        public async Task<IActionResult> GetQuotes([FromQuery] string[] symbols)
+        {
+            var signals = await _udfService.GetQuotes(symbols);
+
+            return Ok(signals);
+        }
+
         //[HttpGet]
         //[Route("marks")]
         //public async Task<IActionResult> Marks(

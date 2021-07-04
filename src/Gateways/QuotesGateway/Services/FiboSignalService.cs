@@ -22,6 +22,7 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
         private readonly string _getFiboSignalsUrl;
         private readonly string _getWeeklyFutureFiboSignalByDateRangeUrl;
         private readonly string _getABBLowHighFibSignalByDateRangeUrl;
+        private readonly string _getABBLowHighFibSignalByDateRangeSymbolsUrl;
         private readonly string _getZigZagFiboSignalByDateRangeUrl;
         public FiboSignalService(IOptionsSnapshot<AppSettings> settings, IHttpClient httpClient, ILogger<SignalService> logger)
         {
@@ -33,6 +34,7 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
             _getFiboSignalsUrl = $"{_settings.Value.SignalsUrl}/api/weeklyfuturefibosignal/";
             _getWeeklyFutureFiboSignalByDateRangeUrl = $"{_settings.Value.SignalsUrl}/api/getweeklyfuturefibosignalbydaterange/";
             _getABBLowHighFibSignalByDateRangeUrl = $"{_settings.Value.SignalsUrl}/api/getabblowhighfibobydaterange/";
+            _getABBLowHighFibSignalByDateRangeSymbolsUrl = $"{_settings.Value.SignalsUrl}/api/getabblowhighfibobydaterangesymbols/";
             _getZigZagFiboSignalByDateRangeUrl = $"{_settings.Value.SignalsUrl}/api/GetZigZagSignalsByDateRange/";
         }
 
@@ -58,9 +60,9 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
             return response;
         }
 
-        public async Task<IEnumerable<WeeklyFutureFiboSignal>> GetABBLowHighFibSignalByDateRange(long from, long to)
+        public async Task<IEnumerable<WeeklyFutureFiboSignal>> GetABBLowHighFibSignalByDateRange(long from, long to, int year, int weekNumber)
         {
-            var aBBLowHighFibSignalByDateRangeUri = ApiPaths.Signals.GetABBLowHighFibSignalByDateRange(_getABBLowHighFibSignalByDateRangeUrl, from, to);
+            var aBBLowHighFibSignalByDateRangeUri = ApiPaths.Signals.GetABBLowHighFibSignalByDateRange(_getABBLowHighFibSignalByDateRangeUrl, from, to, year, weekNumber);
 
             var dataString = await _apiClient.GetStringAsync(aBBLowHighFibSignalByDateRangeUri);
 
@@ -69,6 +71,18 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
             return response;
         }
 
+        public async Task<IEnumerable<string>> GetABBLowHighFibSignalByDateRangeSymbols(long from, long to, int year, int weekNumber)
+        {
+            var aBBLowHighFibSignalByDateRangeSymbolsUri = ApiPaths.Signals.GetABBLowHighFibSignalByDateRangeSymbols(_getABBLowHighFibSignalByDateRangeSymbolsUrl, from, to, year, weekNumber);
+
+            var dataString = await _apiClient.GetStringAsync(aBBLowHighFibSignalByDateRangeSymbolsUri);
+
+            var response = JsonConvert.DeserializeObject<IEnumerable<string>>(dataString);
+
+            return response;
+        }
+
+        
         public async Task<IEnumerable<ZigZagFiboSignal>> GetZigZagFiboSignalsByDateRange(long from, long to)
         {
             var zigzagFiboSignalsByDateRangeUri = ApiPaths.Signals.GetZigZagFiboSignalsByDateRange(_getZigZagFiboSignalByDateRangeUrl, from, to);

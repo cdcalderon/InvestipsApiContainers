@@ -50,9 +50,18 @@ namespace QuotesGateway.Controllers
 
         [HttpGet]
         [Route("getabblowhighfibobydaterange")]
-        public async Task<IActionResult> GetABBLowHighFibSignalByDateRange([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
+        public async Task<IActionResult> GetABBLowHighFibSignalByDateRange([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery] int year, [FromQuery] int weekNumber, [FromQuery]string resolution = "D")
         {
-            var configInfo = await _fiboSignalService.GetABBLowHighFibSignalByDateRange(from, to);
+            var configInfo = await _fiboSignalService.GetABBLowHighFibSignalByDateRange(from, to, year, weekNumber);
+
+            return Ok(configInfo);
+        }
+
+        [HttpGet]
+        [Route("getabblowhighfibobydaterangesymbols")]
+        public async Task<IActionResult> GetABBLowHighFibSignalByDateRangeSymbols([FromQuery] string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery] int year, [FromQuery] int weekNumber, [FromQuery] string resolution = "D")
+        {
+            var configInfo = await _fiboSignalService.GetABBLowHighFibSignalByDateRangeSymbols(from, to, year, weekNumber);
 
             return Ok(configInfo);
         }

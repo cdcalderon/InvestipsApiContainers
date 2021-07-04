@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using InvestipsApiContainers.Gateways.QuotesGateway.DTOs;
 using InvestipsApiContainers.Gateways.QuotesGateway.Infrastructure;
 using InvestipsApiContainers.Gateways.QuotesGateway.Models;
 using Microsoft.Extensions.Logging;
@@ -77,6 +78,32 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
             //var response = JsonConvert.DeserializeObject<HistoryQuoteInfo>(dataString);
 
             return historyQuoteInfo;
+        }
+
+        public async Task<IReadOnlyDictionary<string, SecurityQuote>> GetQuotes(string[] symbols)
+        {
+             var quotes = await Yahoo.Symbols(symbols)
+                            .Fields(Field.ExchangeDataDelayedBy, Field.Symbol,
+                            Field.RegularMarketPrice,
+                            Field.RegularMarketOpen,
+                            Field.RegularMarketDayHigh,
+                            Field.RegularMarketDayLow,
+                            Field.RegularMarketVolume)
+                            .QueryAsync();
+
+            var securityQuotes = quotes.ToDictionary(q => q.Key, q => new SecurityQuote() 
+            { 
+                Symbol = q.Value.Symbol,
+                Close = Convert.ToDecimal( q.Value.RegularMarketPrice),
+                High = Convert.ToDecimal(q.Value.RegularMarketDayHigh),
+                Low = Convert.ToDecimal(q.Value.RegularMarketDayLow),
+                Open = Convert.ToDecimal(q.Value.RegularMarketOpen),
+                TimeStampDateTime = DateTime.Now
+            });
+
+            return securityQuotes;
+
+            //Security symbolSecurity = quotesDayly[symbol];
         }
 
         public async Task<SymboInfo> GetSymbol(string symbol)

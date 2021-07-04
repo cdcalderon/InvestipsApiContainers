@@ -49,9 +49,14 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Infrastructure
                 return $"{baseUri}?from={from}&to={to}";
             }
 
-            public static string GetABBLowHighFibSignalByDateRange(string baseUri, long from, long to)
+            public static string GetABBLowHighFibSignalByDateRange(string baseUri, long from, long to, int year, int weekNumber)
             {
-                return $"{baseUri}?from={from}&to={to}";
+                return $"{baseUri}?from={from}&to={to}&year={year}&weekNumber={weekNumber}";
+            }
+
+            public static string GetABBLowHighFibSignalByDateRangeSymbols(string baseUri, long from, long to, int year, int weekNumber)
+            {
+                return $"{baseUri}?from={from}&to={to}&year={year}&weekNumber={weekNumber}";
             }
 
             public static string GetZigZagFiboSignalsByDateRange(string baseUri, long from, long to)
