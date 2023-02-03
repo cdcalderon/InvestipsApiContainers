@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using InvestipsApiContainers.Gateways.QuotesGateway.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace QuotesGateway.Controllers
 {
@@ -52,27 +53,43 @@ namespace QuotesGateway.Controllers
         [Route("getabblowhighfibobydaterange")]
         public async Task<IActionResult> GetABBLowHighFibSignalByDateRange([FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery] int year, [FromQuery] int weekNumber, [FromQuery]string resolution = "D")
         {
-            var configInfo = await _fiboSignalService.GetABBLowHighFibSignalByDateRange(from, to, year, weekNumber);
+            var result = await _fiboSignalService.GetABBLowHighFibSignalByDateRange(from, to, year, weekNumber);
 
-            return Ok(configInfo);
+            return Ok(result);
         }
 
         [HttpGet]
         [Route("getabblowhighfibobydaterangesymbols")]
         public async Task<IActionResult> GetABBLowHighFibSignalByDateRangeSymbols([FromQuery] string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery] int year, [FromQuery] int weekNumber, [FromQuery] string resolution = "D")
         {
-            var configInfo = await _fiboSignalService.GetABBLowHighFibSignalByDateRangeSymbols(from, to, year, weekNumber);
+            var result = await _fiboSignalService.GetABBLowHighFibSignalByDateRangeSymbols(from, to, year, weekNumber);
 
-            return Ok(configInfo);
+            return Ok(result);
         }
 
         [HttpGet]
         [Route("zigzagfibosignalsbydaterange")]
         public async Task<IActionResult> GetZigZagFiboSignalsByDateRange([FromQuery] string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery] string resolution = "D")
         {
-            var configInfo = await _fiboSignalService.GetZigZagFiboSignalsByDateRange(from, to);
+            var result = await _fiboSignalService.GetZigZagFiboSignalsByDateRange(from, to);
 
-            return Ok(configInfo);
+            //HttpContext.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(
+            //    new { Count = result.MetaData.TotalCount, PageSize = result.MetaData.PageSize, CurrentPage = result.MetaData.CurrentPage, TotalPages = 10 }
+            //    ));
+
+           // Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(result.MetaData));
+           // Response.Headers.Add("Access-Control-Expose-Headers", "X-Pagination");
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("bottomsupportsbydaterange")]
+        public async Task<IActionResult> GetBottomSupportsByDateRange([FromQuery] string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery] string resolution = "D")
+        {
+            var result = await _fiboSignalService.GetBottomSupportsByDateRange(from, to);
+
+            return Ok(result);
         }
     }
 }

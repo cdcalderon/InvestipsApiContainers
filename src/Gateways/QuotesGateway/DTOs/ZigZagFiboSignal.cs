@@ -7,6 +7,8 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.DTOs
 {
     public class ZigZagFiboSignal
     {
+        public int Id { get; set; }
+        public string SignalType { get; set; }
         public string Symbol { get; set; }
         public int WeekNumber { get; set; }
         public string ActivationDirection { get; set; }
@@ -26,5 +28,6 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.DTOs
         public DateTime BDate { get; set; }
         public DateTime CDate { get; set; }
         public string ZigzagType { get; set; }
+        public bool IsPublished { get; set; }
     }
 }

@@ -50,6 +50,7 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway
             services.AddTransient<IUdfService, UdfService>();
             services.AddTransient<ISignalService, SignalService>();
             services.AddTransient<IFiboSignalService, FiboSignalService>();
+            services.AddTransient<IWeeklyZigzagFibPremiumSignalService, WeeklyZigzagFibPremiumSignalService>();
 
             services.AddCors(options =>
             {
@@ -57,7 +58,8 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway
                     builder => builder.AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader()
-                        .AllowCredentials());
+                        .AllowCredentials()
+                        .WithExposedHeaders("x-pagination"));
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

@@ -8,6 +8,7 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.DTOs
     public class WeeklyFutureFiboSignal
     {
         public string Symbol { get; set; }
+        public string SignalType { get; set; }
         public int WeekNumber { get; set; }
         public bool IsFutureNextWeekFibActivatedUp { get; set; }
         public bool IsFutureNextWeekFibActivatedDown { get; set; }

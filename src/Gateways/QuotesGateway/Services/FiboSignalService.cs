@@ -24,6 +24,7 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
         private readonly string _getABBLowHighFibSignalByDateRangeUrl;
         private readonly string _getABBLowHighFibSignalByDateRangeSymbolsUrl;
         private readonly string _getZigZagFiboSignalByDateRangeUrl;
+        private readonly string _getBottomSupportSignalByDateRangeUrl;
         public FiboSignalService(IOptionsSnapshot<AppSettings> settings, IHttpClient httpClient, ILogger<SignalService> logger)
         {
             _settings = settings;
@@ -36,6 +37,7 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
             _getABBLowHighFibSignalByDateRangeUrl = $"{_settings.Value.SignalsUrl}/api/getabblowhighfibobydaterange/";
             _getABBLowHighFibSignalByDateRangeSymbolsUrl = $"{_settings.Value.SignalsUrl}/api/getabblowhighfibobydaterangesymbols/";
             _getZigZagFiboSignalByDateRangeUrl = $"{_settings.Value.SignalsUrl}/api/GetZigZagSignalsByDateRange/";
+            _getBottomSupportSignalByDateRangeUrl = $"{_settings.Value.SignalsUrl}/api/GetBottomSupportsSignalByDateRange/";
         }
 
         public async Task<IEnumerable<WeeklyFutureFiboSignal>> GetFiboSignals(string symbol)
@@ -82,16 +84,27 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
             return response;
         }
 
-        
-        public async Task<IEnumerable<ZigZagFiboSignal>> GetZigZagFiboSignalsByDateRange(long from, long to)
+        public async Task<PagedSignalList<ZigZagFiboSignal>> GetZigZagFiboSignalsByDateRange(long from, long to)
         {
             var zigzagFiboSignalsByDateRangeUri = ApiPaths.Signals.GetZigZagFiboSignalsByDateRange(_getZigZagFiboSignalByDateRangeUrl, from, to);
 
             var dataString = await _apiClient.GetStringAsync(zigzagFiboSignalsByDateRangeUri);
 
-            var response = JsonConvert.DeserializeObject<IEnumerable<ZigZagFiboSignal>>(dataString);
+            var response = JsonConvert.DeserializeObject<PagedSignalList<ZigZagFiboSignal>>(dataString);
 
             return response;
         }
+
+        public async Task<IEnumerable<BottomSupport>> GetBottomSupportsByDateRange(long from, long to)
+        {
+            var bottomSupportSignalsByDateRangeUri = ApiPaths.Signals.GetBottomSupportsByDateRange(_getBottomSupportSignalByDateRangeUrl, from, to);
+
+            var dataString = await _apiClient.GetStringAsync(bottomSupportSignalsByDateRangeUri);
+
+            var response = JsonConvert.DeserializeObject<IEnumerable<BottomSupport>>(dataString);
+
+            return response;
+        }
+        
     }
 }

@@ -10,6 +10,11 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Infrastructure
 
         public static class Signals
         {
+            public static string BaseUrl(string baseUri)
+            {
+                return $"{baseUri}";
+            }
+
             public static string GetAllSignals(string baseUri, int page, int take, int? brand, int? type)
             {
                 var filterQs = "";
@@ -62,6 +67,26 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Infrastructure
             public static string GetZigZagFiboSignalsByDateRange(string baseUri, long from, long to)
             {
                 return $"{baseUri}?from={from}&to={to}";
+            }
+
+            public static string GetBottomSupportsByDateRange(string baseUri, long from, long to)
+            {
+                return $"{baseUri}?from={from}&to={to}";
+            }
+
+            public static string GetVettedSignals(string baseUri, long from, long to)
+            {
+                return $"{baseUri}?from={from}&to={to}";
+            }
+
+            public static string GetWeeklyZigZagFibPremiumSignalById(string baseUri, int signalId)
+            {
+                return $"{baseUri}/signalid/{signalId}";
+            }
+
+            public static string PublishWeeklyZigZagFibPremiumSignals(string baseUri)
+            {
+                return $"{baseUri}";
             }
         }
 
