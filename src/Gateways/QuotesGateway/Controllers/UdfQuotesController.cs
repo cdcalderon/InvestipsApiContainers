@@ -52,15 +52,16 @@ namespace QuotesGateway.Controllers
             return Ok(signals);
         }
 
-        //[HttpGet]
-        //[Route("marks")]
-        //public async Task<IActionResult> Marks(
-        //    [FromQuery]string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery]string resolution = "D")
-        //{
-        //    var configInfo = await _udfService.GetMarks(symbol, from, to, resolution);
+        [HttpGet]
+        [Route("marks")]
+        public async Task<IActionResult> Marks(
+            [FromQuery] string symbol, [FromQuery] long from, [FromQuery] long to, [FromQuery] string resolution = "D")
+        {
+            //var configInfo = await _udfService.GetMarks(symbol, from, to, resolution);
+            var configInfo = await _udfService.GetSuperGapMarks(symbol, from, to, resolution);
 
-        //    return Ok(configInfo);
-        //}
+            return Ok(configInfo);
+        }
 
         [HttpGet]
         [Route("config")]
