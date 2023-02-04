@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,6 +27,12 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<AppSettings>(Configuration);
+
+            //Fetching Connection string from APPSETTINGS.JSON  
+            var ConnectionString = Configuration.GetConnectionString("Investips");
+
+            //Entity Framework  
+            services.AddDbContext<InvestipsQuotesContext>(options => options.UseSqlServer(ConnectionString));
 
             services.Configure<CookiePolicyOptions>(options =>
             {

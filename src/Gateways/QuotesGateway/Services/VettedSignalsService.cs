@@ -30,13 +30,13 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
             _getVettedSignalsUrl = $"{_remoteServiceBaseUrl}/api/vetted/";
         }
 
-        public async Task<IEnumerable<VettedSignal>> GetVettedSignals(long from, long to)
+        public async Task<IEnumerable<DTOs.VettedSignal>> GetVettedSignals(long from, long to)
         {
             var vettedSignalsUri = ApiPaths.Signals.GetVettedSignals(_getVettedSignalsUrl, from, to);
 
             var dataString = await _apiClient.GetStringAsync(vettedSignalsUri);
 
-            var response = JsonConvert.DeserializeObject<IEnumerable<VettedSignal>>(dataString);
+            var response = JsonConvert.DeserializeObject<IEnumerable<DTOs.VettedSignal>>(dataString);
 
             return response;
         }

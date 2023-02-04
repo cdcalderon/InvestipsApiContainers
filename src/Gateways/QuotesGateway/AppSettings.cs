@@ -9,6 +9,7 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway
     {
         public string SignalsUrl { get; set; }
         public string UdfQuotesUrl { get; set; }
+        public string EodApiKey { get; set; }
 
         public Logging Logging { get; set; }
     }

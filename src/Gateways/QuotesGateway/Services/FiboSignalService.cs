@@ -6,6 +6,7 @@ using InvestipsApiContainers.Gateways.QuotesGateway.DTOs;
 using InvestipsApiContainers.Gateways.QuotesGateway.Infrastructure;
 using InvestipsApiContainers.Gateways.QuotesGateway.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -25,7 +26,8 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
         private readonly string _getABBLowHighFibSignalByDateRangeSymbolsUrl;
         private readonly string _getZigZagFiboSignalByDateRangeUrl;
         private readonly string _getBottomSupportSignalByDateRangeUrl;
-        public FiboSignalService(IOptionsSnapshot<AppSettings> settings, IHttpClient httpClient, ILogger<SignalService> logger)
+        private readonly InvestipsQuotesContext quotesContext;
+        public FiboSignalService(IOptionsSnapshot<AppSettings> settings, IHttpClient httpClient, ILogger<SignalService> logger, InvestipsQuotesContext quotesContext)
         {
             _settings = settings;
             _apiClient = httpClient;
@@ -38,6 +40,7 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
             _getABBLowHighFibSignalByDateRangeSymbolsUrl = $"{_settings.Value.SignalsUrl}/api/getabblowhighfibobydaterangesymbols/";
             _getZigZagFiboSignalByDateRangeUrl = $"{_settings.Value.SignalsUrl}/api/GetZigZagSignalsByDateRange/";
             _getBottomSupportSignalByDateRangeUrl = $"{_settings.Value.SignalsUrl}/api/GetBottomSupportsSignalByDateRange/";
+            this.quotesContext = quotesContext;
         }
 
         public async Task<IEnumerable<WeeklyFutureFiboSignal>> GetFiboSignals(string symbol)
@@ -84,27 +87,68 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
             return response;
         }
 
-        public async Task<PagedSignalList<ZigZagFiboSignal>> GetZigZagFiboSignalsByDateRange(long from, long to)
+        public async Task<PagedSignalList<DTOs.ZigZagFiboSignal>> GetZigZagFiboSignalsByDateRange(long from, long to)
+
         {
-            var zigzagFiboSignalsByDateRangeUri = ApiPaths.Signals.GetZigZagFiboSignalsByDateRange(_getZigZagFiboSignalByDateRangeUrl, from, to);
+            string pageNumberString = "1";
+            string pageSizeString = "50";
+            var count = await quotesContext.ZigZagSignalPremiums
+                .Where(x => (x.IsActivatedUp || x.IsActivatedDown) && x.TimeStampDateTime > new DateTime(2020, 11, 1)).CountAsync();
 
-            var dataString = await _apiClient.GetStringAsync(zigzagFiboSignalsByDateRangeUri);
+            var fibSignalPrices = await quotesContext.ZigZagSignalPremiums
+                .Where(x => (x.IsActivatedUp || x.IsActivatedDown) &&
+               x.TimeStampDateTime > new DateTime(2020, 11, 1))
+                //.Skip((pageNumber - 1) * pageSize)  // this was moved to PagedSignals
+                //.Take(pageSize)
+                .Select(x => new DTOs.ZigZagFiboSignal
+                {
+                    Id = x.Id,
+                    Symbol = x.Symbol,
+                    WeekNumber = x.WeekNumber,
+                    ActivationDirection = x.IsActivatedUp ? "UP" : x.IsActivatedDown ? "DOWN" : "NOTACTIVATED",
+                    ActivationPrice = x.ActivationPrice,
+                    ActivationDate = x.TimeStampDateTime,
+                    ALow = x.ALow,
+                    AHigh = x.AHigh,
+                    BHigh = x.BHigh,
+                    BLow = x.BLow,
+                    CLow = x.CLow,
+                    CHigh = x.CHigh,
+                    CLowestOpenOrClose = Math.Min(x.COpen, x.CClose),
+                    CHighestOpenOrClose = Math.Max(x.COpen, x.CClose),
+                    ADate = x.ATimeStampDateTime,
+                    BDate = x.BTimeStampDateTime,
+                    CDate = x.CTimeStampDateTime,
+                    ZigzagType = x.ZigzagType,
+                    //ZigZagSignalIdentifier = x.ZigZagSignalIdentifier,
+                    Support = x.SupportPrice,
+                    Resistence = x.ResistencePrice,
+                    SignalType = x.SignalType,
+                    IsPublished = x.IsPublished
+                })
+                .ToListAsync();
+            var pagedResult = new PagedSignalList<ZigZagFiboSignal>(fibSignalPrices, count, 1, 100);
 
-            var response = JsonConvert.DeserializeObject<PagedSignalList<ZigZagFiboSignal>>(dataString);
+           // response.MetaData{ }
 
-            return response;
+            //var zigzagFiboSignalsByDateRangeUri = ApiPaths.Signals.GetZigZagFiboSignalsByDateRange(_getZigZagFiboSignalByDateRangeUrl, from, to);
+
+            //var dataString = await _apiClient.GetStringAsync(zigzagFiboSignalsByDateRangeUri);
+            //var response = new PagedList<ZigZagFiboSignal>(fibSignalPrices, fibSignalPrices.Count(), 1, 100);
+            //var response = JsonConvert.DeserializeObject<PagedSignalList<ZigZagFiboSignal>>(JsonConvert.SerializeObject(fibSignalPrices));
+
+            return pagedResult;
         }
 
-        public async Task<IEnumerable<BottomSupport>> GetBottomSupportsByDateRange(long from, long to)
+        public async Task<IEnumerable<DTOs.BottomSupport>> GetBottomSupportsByDateRange(long from, long to)
         {
             var bottomSupportSignalsByDateRangeUri = ApiPaths.Signals.GetBottomSupportsByDateRange(_getBottomSupportSignalByDateRangeUrl, from, to);
 
             var dataString = await _apiClient.GetStringAsync(bottomSupportSignalsByDateRangeUri);
 
-            var response = JsonConvert.DeserializeObject<IEnumerable<BottomSupport>>(dataString);
+            var response = JsonConvert.DeserializeObject<IEnumerable<DTOs.BottomSupport>>(dataString);
 
             return response;
         }
-        
     }
 }

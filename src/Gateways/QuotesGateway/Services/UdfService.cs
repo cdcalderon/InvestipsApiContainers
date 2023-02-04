@@ -15,9 +15,6 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
 {
     public class UdfService: IUdfService
     {
-        const string ApiToken = "60723912a51775.74899570";
-        EODHistoricalDataClient historicalClient = new EODHistoricalDataClient(ApiToken, true);
-
         private readonly IOptionsSnapshot<AppSettings> _settings;
         private readonly IHttpClient _apiClient;
         private readonly ILogger<UdfService> _logger;
@@ -30,10 +27,12 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
         private readonly string _remoteServiceBaseUrlBullAllSignalsMarks;
         private readonly string _remoteServiceBaseUrlBullAllSignalsMarksBear;
         private readonly string _remoteServiceBaseUrlGetAllSignals;
+        private readonly string _getEofApiKey;
         //private readonly  Dictionary<string, string> _signalsBaseUrls;
+        private readonly InvestipsQuotesContext quotesContext;
+        EODHistoricalDataClient historicalClient;
 
-
-        public UdfService(IOptionsSnapshot<AppSettings> settings, IHttpClient httpClient, ILogger<UdfService> logger)
+        public UdfService(IOptionsSnapshot<AppSettings> settings, IHttpClient httpClient, ILogger<UdfService> logger, InvestipsQuotesContext quotesContext)
         {
             _settings = settings;
             _apiClient = httpClient;
@@ -54,8 +53,9 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
             _remoteServiceBaseUrlBullAllSignalsMarks = $"{_settings.Value.SignalsUrl}/api/BullAllSignalsFunction/";
             _remoteServiceBaseUrlBullAllSignalsMarksBear = $"{_settings.Value.SignalsUrl}/api/BearAllSignalsFunction/";
             _remoteServiceBaseUrlGetAllSignals = $"{_settings.Value.SignalsUrl}/api/GetAllSignalsFunction/";
-
-
+            _getEofApiKey = _settings.Value.EodApiKey;
+            historicalClient = new EODHistoricalDataClient(_getEofApiKey, true);
+            this.quotesContext = quotesContext;
         }
         public async Task<HistoryQuoteInfo> GetHistoryQuotes(string symbol, long from, long to, string resolution = "D")
         {
@@ -193,13 +193,41 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
 
         public async Task<MarkInfo> GetSuperGapMarks(string symbol, long from, long to, string resolution = "D")
         {
-            var marksUri = ApiPaths.UdfQuotes.GetMarks(_remoteServiceBaseUrlGapSignalsMarks, symbol, from, to, resolution);
+            var quotes = quotesContext.Quotes.Where(q => (q.IsSuperGapBear == true || q.IsSuperGapBear == true) &&
+                                             q.Symbol == symbol).ToList();
+            MarkInfo marks = new MarkInfo();
+            if (quotes.Count > 0)
+            {
+                quotes.Add(quotes.Last()); // Temporary POC fix for issue displaying last item in UI
+                var ids = Enumerable.Range(0, quotes.Count() - 1).ToList();
+                var times = quotes.Select(x => Convert.ToInt64(ToUnixTimeStamp(x.TimeStampDateTime)))
+                    .ToList();
+                var colors = quotes.Select(x => "blue").ToList();
+                var texts = quotes.Select(x => "Super Gaps").ToList();
+                var labels = quotes.Select(x => "G").ToList();
+                var labelFontColors = quotes.Select(x => "white").ToList();
+                var minSizes = quotes.Select(x => 20).ToList();
 
-            var dataString = await _apiClient.GetStringAsync(marksUri);
+                marks = new MarkInfo()
+                {
+                    id = ids,
+                    time = times,
+                    color = colors,
+                    text = texts,
+                    label = labels,
+                    labelFontColor = labelFontColors,
+                    minSize = minSizes
+                };
+            }
 
-            var response = JsonConvert.DeserializeObject<MarkInfo>(dataString);
+            return marks;
+            //var marksUri = ApiPaths.UdfQuotes.GetMarks(_remoteServiceBaseUrlGapSignalsMarks, symbol, from, to, resolution);
 
-            return response;
+            //var dataString = await _apiClient.GetStringAsync(marksUri);
+
+            //var response = JsonConvert.DeserializeObject<MarkInfo>(dataString);
+
+            //return response;
         }
 
         public async Task<MarkInfo> GetBullStoch307Marks(string symbol, long from, long to, string resolution = "D")

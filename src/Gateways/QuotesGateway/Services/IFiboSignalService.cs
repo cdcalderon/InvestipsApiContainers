@@ -12,6 +12,6 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
         Task<IEnumerable<WeeklyFutureFiboSignal>> GetABBLowHighFibSignalByDateRange(long from, long to, int year, int weekNumber);
         Task<IEnumerable<string>> GetABBLowHighFibSignalByDateRangeSymbols(long from, long to, int year, int weekNumber);
         Task<PagedSignalList<ZigZagFiboSignal>> GetZigZagFiboSignalsByDateRange(long from, long to);
-        Task<IEnumerable<BottomSupport>> GetBottomSupportsByDateRange(long from, long to);
+        Task<IEnumerable<DTOs.BottomSupport>> GetBottomSupportsByDateRange(long from, long to);
     }
 }
