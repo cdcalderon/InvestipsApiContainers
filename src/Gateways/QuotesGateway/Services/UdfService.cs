@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EODHistoricalData.NET;
 using InvestipsApiContainers.Gateways.QuotesGateway.DTOs;
 using InvestipsApiContainers.Gateways.QuotesGateway.Infrastructure;
 using InvestipsApiContainers.Gateways.QuotesGateway.Models;
@@ -14,6 +15,9 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
 {
     public class UdfService: IUdfService
     {
+        const string ApiToken = "60723912a51775.74899570";
+        EODHistoricalDataClient historicalClient = new EODHistoricalDataClient(ApiToken, true);
+
         private readonly IOptionsSnapshot<AppSettings> _settings;
         private readonly IHttpClient _apiClient;
         private readonly ILogger<UdfService> _logger;
@@ -60,14 +64,18 @@ namespace InvestipsApiContainers.Gateways.QuotesGateway.Services
             var fromDate = FromUnixTimeStamp(from);
             var toDate = FromUnixTimeStamp(to);
 
-            var history = await Yahoo.GetHistoricalAsync(symbol, fromDate, toDate,
-                       Period.Daily);
-            var o = history.Select(x => x.Open);
-            var h = history.Select(x => x.High);
-            var l = history.Select(x => x.Low);
-            var c = history.Select(x => x.Close);
-            var v = history.Select(x => x.Volume);
-            var t = history.Select(x => Convert.ToInt64(ToUnixTimeStamp(x.DateTime)));
+            //var history = await Yahoo.GetHistoricalAsync(symbol, fromDate, toDate,
+            //           Period.Daily);
+
+            var historicalQuotes = historicalClient.GetHistoricalPrices(symbol, fromDate, toDate);
+
+            var o = historicalQuotes.Select(x => x.Open);
+            var h = historicalQuotes.Select(x => x.High);
+            var l = historicalQuotes.Select(x => x.Low);
+            var c = historicalQuotes.Select(x => x.Close);
+            var v = historicalQuotes.Select(x => x.Volume);
+           // var t = historicalQuotes.Select(x => x.Timestamp);
+            var t = historicalQuotes.Select(x => Convert.ToInt64(ToUnixTimeStamp(x.Date.UtcDateTime)));
 
             var historyQuoteInfo = new HistoryQuoteInfo() { o = o, h = h, l = l, c = c, v = v, t = t, s = "ok" };
 
